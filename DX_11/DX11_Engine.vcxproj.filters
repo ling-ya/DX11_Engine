@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{13ddd20b-81ea-4db7-be12-0c23e4b6f86a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{8db1e64b-ef2a-4368-b03a-a5672ea472e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Header">
+      <UniqueIdentifier>{d33217e6-c52c-41c8-906e-854ec6907c09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\VS">
+      <UniqueIdentifier>{75480028-8c25-43ae-8bda-a4ab6e5382b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PS">
+      <UniqueIdentifier>{4d762804-ea2d-44e0-b2c3-fd9530c6f8bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="通用文件">
+      <UniqueIdentifier>{df9f5025-bd5f-4fec-a010-3e7d93fe3368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\FX11">
+      <UniqueIdentifier>{b7661eb7-3d86-4635-93a5-7890cb58032e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRender.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Singleton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTrace.cpp">
+      <Filter>通用文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StringConvert.cpp">
+      <Filter>通用文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="keyBoard.cpp">
+      <Filter>通用文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>通用文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>通用文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>通用文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStates.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRender.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTrace.h">
+      <Filter>通用文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StringConvert.h">
+      <Filter>通用文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="keyBoard.h">
+      <Filter>通用文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>通用文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader.h">
+      <Filter>通用文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>通用文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="HLSL\Cube_VS.hlsl">
+      <Filter>Shader\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL123\Triangle_VS.hlsl">
+      <Filter>Shader\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Cube_PS.hlsl">
+      <Filter>Shader\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL123\Triangle_PS.hlsl">
+      <Filter>Shader\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Light_VS.hlsl">
+      <Filter>Shader\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Light_PS.hlsl">
+      <Filter>Shader\PS</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HLSL\Cube.hlsli">
+      <Filter>Shader\Header</Filter>
+    </None>
+    <None Include="HLSL123\Triangle.hlsli">
+      <Filter>Shader\Header</Filter>
+    </None>
+    <None Include="HLSL\LightHelper.hlsli">
+      <Filter>Shader\Header</Filter>
+    </None>
+    <None Include="HLSL\MyLight.hlsli">
+      <Filter>Shader\Header</Filter>
+    </None>
+    <None Include="HLSL\Test.fx">
+      <Filter>Shader\FX11</Filter>
+    </None>
+  </ItemGroup>
+</Project>

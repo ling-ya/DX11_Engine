@@ -20,5 +20,6 @@ public:
 	static ComPtr<ID3D11BlendState> BSAlphaToCoverage;	// 混合状态：Alpha-To-Coverage
 
 	static ComPtr<ID3D11DepthStencilState> DSSWriteStencil; //深度/模板状态：写入模板值
+	static ComPtr<ID3D11DepthStencilState> DSSDrawWithStencil;	// 深度/模板状态：对指定模板值的区域进行绘制
 };
 

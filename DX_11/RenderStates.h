@@ -21,5 +21,8 @@ public:
 
 	static ComPtr<ID3D11DepthStencilState> DSSWriteStencil; //深度/模板状态：写入模板值
 	static ComPtr<ID3D11DepthStencilState> DSSDrawWithStencil;	// 深度/模板状态：对指定模板值的区域进行绘制
+	static ComPtr<ID3D11DepthStencilState> DSSNoDoubleBlend;    //深度/模板状态：无二次混合区域
+	static ComPtr<ID3D11DepthStencilState> DSSNoDepthTest;      //深度/模板状态：关闭深度测试
+	static ComPtr<ID3D11DepthStencilState> DSSNoDepthWrite;     //深度/模板状态：仅深度测试，不写入深度值
 };
 

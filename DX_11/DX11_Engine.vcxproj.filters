@@ -208,13 +208,7 @@
     <FxCompile Include="HLSL\Cube_VS.hlsl">
       <Filter>Shader\VS</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL123\Triangle_VS.hlsl">
-      <Filter>Shader\VS</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\Cube_PS.hlsl">
-      <Filter>Shader\PS</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL123\Triangle_PS.hlsl">
       <Filter>Shader\PS</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\Light_VS.hlsl">
@@ -226,9 +220,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Cube.hlsli">
-      <Filter>Shader\Header</Filter>
-    </None>
-    <None Include="HLSL123\Triangle.hlsli">
       <Filter>Shader\Header</Filter>
     </None>
     <None Include="HLSL\LightHelper.hlsli">

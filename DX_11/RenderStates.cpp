@@ -8,6 +8,14 @@ ComPtr<ID3D11BlendState> RenderStates::BSAlphaToCoverage = nullptr;
 ComPtr<ID3D11BlendState> RenderStates::BSNoColorWrite = nullptr;
 ComPtr<ID3D11BlendState> RenderStates::BSTransparent = nullptr;
 
+ComPtr<ID3D11DepthStencilState> RenderStates::DSSWriteStencil = nullptr;
+ComPtr<ID3D11DepthStencilState> RenderStates::DSSDrawWithStencil = nullptr;
+ComPtr<ID3D11DepthStencilState> RenderStates::DSSNoDoubleBlend = nullptr;
+ComPtr<ID3D11DepthStencilState> RenderStates::DSSNoDepthTest = nullptr;
+ComPtr<ID3D11DepthStencilState> RenderStates::DSSNoDepthWrite = nullptr;
+
+
+
 bool RenderStates::ISInit()
 {
     return RSWireframe != nullptr;

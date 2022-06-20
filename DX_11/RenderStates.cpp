@@ -80,4 +80,97 @@ void RenderStates::InitAll(ID3D11Device* pdevice)
     rtDesc.DestBlendAlpha = D3D11_BLEND_ONE;
     rtDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
     HR(pdevice->CreateBlendState(&blendDesc, BSNoColorWrite.GetAddressOf()));
+
+    //******************************
+    //初始化深度/模板状态
+
+    D3D11_DEPTH_STENCIL_DESC dsDesc;
+
+    //镜面标记深度/模板状态
+    //这里不写入深度信息
+    //无论是正面还是背面，原来指定的区域的都会被写入StencilRef
+    dsDesc.DepthEnable = true;
+    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; //这里设置了不写入深度，但是开启了深度测试
+    dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+    dsDesc.StencilEnable = true;
+    dsDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+    dsDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+    dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+    dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+    //对于背面的几何体我们是不进行渲染的，所以这里的设置无关紧要
+    dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+    dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+    HR(pdevice->CreateDepthStencilState(&dsDesc, DSSWriteStencil.GetAddressOf()));
+
+
+    //反射绘制深度/模板状态
+    //由于要绘制反射镜面，需要更新深度
+    //仅当镜面标记模板值和当前设置模板值相等时才会进行绘制
+    dsDesc.DepthEnable = true;
+    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+    dsDesc.StencilEnable = true;
+    dsDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+    dsDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+    dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+    // 对于背面的几何体我们是不进行渲染的，所以这里的设置无关紧要
+    dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+    HR(pdevice->CreateDepthStencilState(&dsDesc, DSSDrawWithStencil.GetAddressOf()));
+
+    // 无二次混合深度/模板状态
+    // 允许默认深度测试
+    // 通过自递增使得原来StencilRef的值只能使用一次，实现仅一次混合
+    dsDesc.DepthEnable = true;
+    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+    dsDesc.StencilEnable = true;
+    dsDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+    dsDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+    dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+    dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+    // 对于背面的几何体我们是不进行渲染的，所以这里的设置无关紧要
+    dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+    dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+    HR(pdevice->CreateDepthStencilState(&dsDesc, DSSNoDoubleBlend.GetAddressOf()));
+
+    // 关闭深度测试的深度/模板状态，关闭深度测试后，就没有深度写入
+    // 若绘制非透明物体，务必严格按照绘制顺序
+    // 绘制透明物体则不需要担心绘制顺序
+    // 而默认情况下模板测试就是关闭的
+    dsDesc.DepthEnable = false;
+    dsDesc.StencilEnable = false;
+    HR(pdevice->CreateDepthStencilState(&dsDesc, DSSNoDepthTest.GetAddressOf()));
+
+    //进行深度测试，但不写入深度值的状态
+    //若绘制非透明的物体，应使用默认状态
+    //绘制透明物体时，使用该状态可以有效确保混合状态的进行
+    //并且确保较前的非透明物体可以阻挡较后的一切物体
+    dsDesc.DepthEnable = true;
+    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+    dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    dsDesc.StencilEnable = false;
+    HR(pdevice->CreateDepthStencilState(&dsDesc, DSSNoDepthWrite.GetAddressOf()));
 }

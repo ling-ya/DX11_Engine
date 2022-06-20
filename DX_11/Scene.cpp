@@ -9,6 +9,8 @@ Scene::Scene() :m_pWindow(nullptr),m_pLight(nullptr),m_pCamera(nullptr)
 
 	m_WireFence = nullptr;
 	m_water = nullptr;
+
+	m_Mirror = nullptr;
 }
 
 void Scene::Init()
@@ -55,7 +57,8 @@ void Scene::Init()
 	pcuberender->m_pMat->SetTexture("Texture\\WoodCrate.dds");
 	m_pCube->AddComponent(pcuberender);
 
-	//透明物体
+	//透明物体(这是开启了深度测试的)
+	//先绘制篱笆盒，绘制完后像素已经在后备缓冲区，再绘制水面，水面能通过深度测试，通过的像素再进行混合
 	m_WireFence = GameObject::CreateGameObject("WireFence");
 	m_WireFence->GetComponent<Transform>()->SetPosition(3.0f, 0.1f, 0.0f);
 	MeshRender* pwireRender = new MeshRender(Mesh::CreateCube());

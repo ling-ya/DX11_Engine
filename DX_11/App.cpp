@@ -40,6 +40,8 @@ void App::DrawScene()
 	mWin->Gfx().ClearBuffer(0.1921f, 0.3019f, 0.4075f);
 	//mWin->Gfx().ClearBuffer(0.0f, 0.0f, 0.0f);
 	mWin->Gfx().OnRender(m_Timer.Mark());
+
+	//mWin->Gfx().OnRender(m_Timer.Mark());
 }
 
 void App::ShowFPS()

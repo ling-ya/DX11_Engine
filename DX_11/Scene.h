@@ -15,6 +15,7 @@ public:
 	~Scene() = default;
 	void Init();
 	void UpdateScene(float deltaTime);
+	void UpdateRenderState();
 
 public:
 	Window* m_pWindow;

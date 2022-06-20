@@ -25,7 +25,13 @@ void Scene::Init()
 	pCameraComponent->SetFrustum(XM_PI/3, m_pWindow->GetAspect(), 0.5f, 1000.0f);//设置视锥体
 	m_pCamera->AddComponent(pCameraComponent);//添加相机组件
 
-
+	m_Mirror = GameObject::CreateGameObject("Plane");
+	m_Mirror->GetComponent<Transform>()->SetPosition(0.0f, 3.0f, 9.0f);
+	m_Mirror->GetComponent<Transform>()->SetRotation(-XM_PIDIV2, 0.0f, 0.0f);
+	MeshRender* pMirrorrender = new MeshRender(Mesh::CreatePlane(8.0f, 8.0f, 1.0f, 1.0f));
+	pMirrorrender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
+	pMirrorrender->m_pMat->SetTexture("Texture\\ice.dds");
+	m_Mirror->AddComponent(pMirrorrender);
 	//不透明物体
 
 	//地板
@@ -132,4 +138,8 @@ void Scene::UpdateScene(float deltaTime)
 	{
 		m_CameraTrans->Translate(m_CameraTrans->GetRightAxis(), deltaTime * 6.0f);
 	}*/
+}
+
+void Scene::UpdateRenderState()
+{
 }

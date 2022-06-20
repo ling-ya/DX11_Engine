@@ -75,7 +75,6 @@ void Scene::Init()
 	pwaterRender->m_pMat->SetDiffuse(XMFLOAT4(0.8f, 0.8f, 0.8f, 0.5f));
 	pwaterRender->m_pMat->SetSpecluar(XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f));
 	pwaterRender->m_pMat->SetTexture("Texture\\water.dds");
-	//pwaterRender->m_pMat->m_pRS = RenderStates::RSNoCull;
 	pwaterRender->m_pMat->m_pBS = RenderStates::BSTransparent;
 	m_water->AddComponent(pwaterRender);
 }

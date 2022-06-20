@@ -33,5 +33,8 @@ public:
 	//透明物体
 	GameObject* m_WireFence;
 	GameObject* m_water;
+
+	//反射镜面
+	GameObject* m_Mirror;
 };
 

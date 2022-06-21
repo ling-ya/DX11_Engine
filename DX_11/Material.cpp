@@ -7,7 +7,7 @@ Material::Material(Shader* pShader):m_pShader(pShader),c_TransformBuffer(), cBSu
 {
 	c_TransformBuffer.world = XMMatrixIdentity();
 	c_TransformBuffer.worldInvTranspose= XMMatrixIdentity();
-
+	c_TransformBuffer.reflection = XMMatrixTranspose(XMMatrixReflect(XMVectorSet(0.0f, 0.0f, -1.0f, 10.0f)));;
 
 	cBSufMat.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	cBSufMat.diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);

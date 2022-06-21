@@ -9,6 +9,9 @@ cbuffer TransformBuffer : register(b0)
     //matrix g_View;
     //matrix g_Proj;
     matrix g_WorldInvTranspose;
+    matrix g_Reflection;
+    int g_IsReflection;
+    float3 g_Pad1;
 }
 
 cbuffer VPBuffer : register(b1)

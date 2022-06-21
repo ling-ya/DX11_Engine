@@ -15,8 +15,8 @@ public:
 	~Scene() = default;
 	void Init();
 	void UpdateScene(float deltaTime);
-	void UpdateRenderState();
-
+	void UpdateNormalState();
+	void UpdateReflectState();
 public:
 	Window* m_pWindow;
 	DirectX::Mouse::ButtonStateTracker MouseTracker;				// Êó±ê×´Ì¬×·×ÙÆ÷

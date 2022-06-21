@@ -3,6 +3,7 @@
 
 ComPtr<ID3D11RasterizerState> RenderStates::RSNoCull = nullptr;
 ComPtr<ID3D11RasterizerState> RenderStates::RSWireframe = nullptr;
+ComPtr<ID3D11RasterizerState> RenderStates::RSCullClockWise = nullptr;
 
 ComPtr<ID3D11BlendState> RenderStates::BSAlphaToCoverage = nullptr;
 ComPtr<ID3D11BlendState> RenderStates::BSNoColorWrite = nullptr;
@@ -43,6 +44,13 @@ void RenderStates::InitAll(ID3D11Device* pdevice)
     rasterizerDesc.AntialiasedLineEnable = false;
     rasterizerDesc.DepthClipEnable = true;
     HR(pdevice->CreateRasterizerState(&rasterizerDesc, RSNoCull.GetAddressOf()));
+
+    // 顺时针剔除模式
+    rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+    rasterizerDesc.CullMode = D3D11_CULL_BACK;
+    rasterizerDesc.FrontCounterClockwise = true;
+    rasterizerDesc.DepthClipEnable = true;
+    HR(pdevice->CreateRasterizerState(&rasterizerDesc, RSCullClockWise.GetAddressOf()));
 
     //初始化混合状态
     D3D11_BLEND_DESC blendDesc;

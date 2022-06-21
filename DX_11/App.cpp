@@ -39,8 +39,11 @@ void App::DrawScene()
 	float c = (float)sin(m_Timer.Peek()) / 2.0f + 0.5f;
 	mWin->Gfx().ClearBuffer(0.1921f, 0.3019f, 0.4075f);
 	//mWin->Gfx().ClearBuffer(0.0f, 0.0f, 0.0f);
-	mWin->Gfx().OnRender(m_Timer.Mark());
+	pScene->UpdateReflectState();
+	mWin->Gfx().OnRender(m_Timer.Mark());//»æÖÆ·´Éä
 
+	//pScene->UpdateNormalState();
+	//mWin->Gfx().OnRender(m_Timer.Mark());
 	//mWin->Gfx().OnRender(m_Timer.Mark());
 }
 

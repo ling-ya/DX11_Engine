@@ -18,9 +18,17 @@ float4 PS(v2f i) : SV_TARGET
     float4 D = float4(0.0f, 0.0f, 0.0f, 0.0f);
     float4 S = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	int a ;
+	[unroll]
 	for (a = 0; a < g_NumDirLight; ++a)
     {
-        ComputeDirectionalLight(g_DirLight[a], i.NormalW, toEyeW, g_Matmbient, g_Matdiffuse, g_Matspceular, A, D, S);
+		DirectionalLight dirLight = g_DirLight[a];
+
+		[flatten]
+		if(g_IsReflection)
+		{
+			dirLight.Direction = mul(dirLight.Direction,(float3x3)g_Reflection);
+		}
+        ComputeDirectionalLight(dirLight, i.NormalW, toEyeW, g_Matmbient, g_Matdiffuse, g_Matspceular, A, D, S);
         ambient += A;
         diffuse += D;
         spec += S;

@@ -41,7 +41,7 @@ void RenderStates::InitAll(ID3D11Device* pdevice)
     //无背面剔除模式
     rasterizerDesc.FillMode = D3D11_FILL_SOLID;
     rasterizerDesc.CullMode = D3D11_CULL_NONE;
-    rasterizerDesc.AntialiasedLineEnable = false;
+    rasterizerDesc.FrontCounterClockwise = false;
     rasterizerDesc.DepthClipEnable = true;
     HR(pdevice->CreateRasterizerState(&rasterizerDesc, RSNoCull.GetAddressOf()));
 
@@ -69,7 +69,7 @@ void RenderStates::InitAll(ID3D11Device* pdevice)
     //Alpha = SrcAlpha;
     blendDesc.AlphaToCoverageEnable = false;
     blendDesc.IndependentBlendEnable = false;
-    rtDesc.BlendEnable = true;//开启混合
+    rtDesc.BlendEnable = true;
     rtDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
     rtDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
     rtDesc.BlendOp = D3D11_BLEND_OP_ADD;
@@ -81,12 +81,14 @@ void RenderStates::InitAll(ID3D11Device* pdevice)
     //无颜色写入模式
     // Color = DestColor
     // Alpha = DestAlpha
+    rtDesc.BlendEnable = false;
     rtDesc.SrcBlend = D3D11_BLEND_ZERO;
     rtDesc.DestBlend = D3D11_BLEND_ONE;
     rtDesc.BlendOp = D3D11_BLEND_OP_ADD;
     rtDesc.SrcBlendAlpha = D3D11_BLEND_ZERO;
     rtDesc.DestBlendAlpha = D3D11_BLEND_ONE;
     rtDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    rtDesc.RenderTargetWriteMask = 0;
     HR(pdevice->CreateBlendState(&blendDesc, BSNoColorWrite.GetAddressOf()));
 
     //******************************
@@ -98,7 +100,7 @@ void RenderStates::InitAll(ID3D11Device* pdevice)
     //这里不写入深度信息
     //无论是正面还是背面，原来指定的区域的都会被写入StencilRef
     dsDesc.DepthEnable = true;
-    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; //这里设置了不写入深度，但是开启了深度测试
+    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
     dsDesc.StencilEnable = true;
@@ -109,7 +111,7 @@ void RenderStates::InitAll(ID3D11Device* pdevice)
     dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
     dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
     dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-    //对于背面的几何体我们是不进行渲染的，所以这里的设置无关紧要
+    // 对于背面的几何体我们是不进行渲染的，所以这里的设置无关紧要
     dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
     dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
     dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;

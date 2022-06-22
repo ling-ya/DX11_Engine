@@ -21,7 +21,7 @@ void Light::Start()
 	m_CBLight.pointLight[0].range = 25.0f;
 
 	m_CBLight.numDirLight = 1;
-	m_CBLight.numPointLight = 1;
+	m_CBLight.numPointLight = 0;
 	m_CBLight.numSpotLight = 0;
 	m_CBLight.sysPos = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);;
 	// 设置常量缓冲区描述

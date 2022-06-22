@@ -38,6 +38,7 @@ public:
 	//void Init(int ClientWidth,int ClientHeight);
 	void ClearBuffer(float r, float g, float b);
 	void OnRender(float deltaTime);
+	void OnPresent(UINT SyncInterval, UINT Flags);
 	//void InitResource();
 	//void InitEffect();
 public:

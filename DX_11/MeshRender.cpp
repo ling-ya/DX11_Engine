@@ -17,8 +17,8 @@ void MeshRender::Start()
 
 void MeshRender::Update(float deltaTime)
 {
-	Graphics::m_pContext->RSSetState(m_pMat->m_pRS==nullptr?nullptr: m_pMat->m_pRS.Get());                                                        //光栅化状态
-	Graphics::m_pContext->OMSetDepthStencilState(m_pMat->m_pDDS == nullptr ? nullptr : m_pMat->m_pDDS.Get(), m_pMat->m_pDDS == nullptr ? 0 : 1);  //深度模板状态
+	Graphics::m_pContext->RSSetState(m_pMat->m_pRS == nullptr ? nullptr : m_pMat->m_pRS.Get()); ;                                                      //光栅化状态
+	Graphics::m_pContext->OMSetDepthStencilState(m_pMat->m_pDSS.Get(), m_pMat->m_pDSS == nullptr ? 0 : 1);  //深度模板状态
 	Graphics::m_pContext->OMSetBlendState(m_pMat->m_pBS == nullptr ? nullptr : m_pMat->m_pBS.Get(), nullptr, 0xFFFFFFFF);                         //混合状态
 
 	Graphics::m_pContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);

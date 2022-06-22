@@ -72,7 +72,7 @@ public:
 	ComPtr<ID3D11SamplerState> m_pSamplerState;		     // 采样器状态
 	ComPtr<ID3D11RasterizerState> m_pRS;                 //光栅化器状态
 	ComPtr<ID3D11BlendState> m_pBS;                      //混合状态
-	ComPtr<ID3D11DepthStencilState> m_pDDS;              //深度/模板状态
+	ComPtr<ID3D11DepthStencilState> m_pDSS;              //深度/模板状态
 
 	//ComPtr<ID3DX11EffectTechnique> m_pEffecTechnique;
 

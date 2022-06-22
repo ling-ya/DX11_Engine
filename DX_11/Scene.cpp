@@ -25,12 +25,13 @@ void Scene::Init()
 	pCameraComponent->SetFrustum(XM_PI/3, m_pWindow->GetAspect(), 0.5f, 1000.0f);//设置视锥体
 	m_pCamera->AddComponent(pCameraComponent);//添加相机组件
 
-	m_Mirror = GameObject::CreateGameObject("Plane");
-	m_Mirror->GetComponent<Transform>()->SetPosition(0.0f, 3.0f, 9.0f);
+	m_Mirror = GameObject::CreateGameObject("Mirror");
+	m_Mirror->GetComponent<Transform>()->SetPosition(0.0f, 3.0f, 10.0f);
 	m_Mirror->GetComponent<Transform>()->SetRotation(-XM_PIDIV2, 0.0f, 0.0f);
 	MeshRender* pMirrorrender = new MeshRender(Mesh::CreatePlane(8.0f, 8.0f, 1.0f, 1.0f));
 	pMirrorrender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
 	pMirrorrender->m_pMat->SetTexture("Texture\\ice.dds");
+	pMirrorrender->m_pMat->SetDiffuse(XMFLOAT4(0.8f, 0.8f, 0.8f, 0.3f));
 	m_Mirror->AddComponent(pMirrorrender);
 	//不透明物体
 
@@ -43,16 +44,16 @@ void Scene::Init()
 	m_pPlane->AddComponent(pPlanerender);
 
 	//墙面
-	for (int i = 0; i < 4; i++)
-	{
-		m_Walls[i] = GameObject::CreateGameObject("Wall");
-		m_Walls[i]->GetComponent<Transform>()->SetRotation(-XM_PIDIV2, XM_PIDIV2 * i, 0.0f);
-		m_Walls[i]->GetComponent<Transform>()->SetPosition(i % 2 ? -10.0f * (i - 2) : 0.0f, 3.0f, i % 2 == 0 ? -10.0f * (i - 1) : 0.0f);
-		MeshRender* pWallrender = new MeshRender(Mesh::CreatePlane(20.0f, 8.0f, 5.0f, 1.5f));
-		pWallrender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
-		pWallrender->m_pMat->SetTexture("Texture\\brick.dds");
-		m_Walls[i]->AddComponent(pWallrender);
-	}
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	m_Walls[i] = GameObject::CreateGameObject("Wall");
+	//	m_Walls[i]->GetComponent<Transform>()->SetRotation(-XM_PIDIV2, XM_PIDIV2 * i, 0.0f);
+	//	m_Walls[i]->GetComponent<Transform>()->SetPosition(i % 2 ? -10.0f * (i - 2) : 0.0f, 3.0f, i % 2 == 0 ? -10.0f * (i - 1) : 0.0f);
+	//	MeshRender* pWallrender = new MeshRender(Mesh::CreatePlane(20.0f, 8.0f, 5.0f, 1.5f));
+	//	pWallrender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
+	//	pWallrender->m_pMat->SetTexture("Texture\\brick.dds");
+	//	m_Walls[i]->AddComponent(pWallrender);
+	//}
 
 	//Cube
 	m_pCube = GameObject::CreateGameObject("Cube");
@@ -140,86 +141,132 @@ void Scene::UpdateScene(float deltaTime)
 	}*/
 }
 
+/// <summary>
+/// 镜面反射状态设置
+/// </summary>
+void Scene::UpdateReflectState()
+{
+	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;
+	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSNoColorWrite;
+	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSWriteStencil;
+
+
+	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
+	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
+	m_pPlane->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+
+	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
+	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
+	m_pCube->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+
+	// ******************
+	// 2. 绘制不透明的反射物体
+	//
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+	//}
+
+	// ******************
+	// 3. 绘制透明的反射物体
+	//
+	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
+	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
+	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
+	m_WireFence->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+
+	m_water->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
+	m_water->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
+	m_water->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
+	m_water->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+}
+
 void Scene::UpdateNormalState()
 {
 	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
 	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
-	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
+	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
+	m_Mirror->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
 
-	//绘制正常物体
-	for (int i = 0; i < 4; i++)
-	{
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;//顺时针裁剪
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDDS = nullptr;
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
-	}
+	////绘制正常物体
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;//顺时针裁剪
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDSS = nullptr;
+	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
+	//}
 
 	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;//顺时针裁剪
 	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pDDS = nullptr;
+	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pDSS = nullptr;
 	m_pPlane->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
 
 	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;//顺时针裁剪
 	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pDDS = nullptr;
+	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pDSS = nullptr;
 	m_pCube->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
 
 	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
 	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
-	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pDDS = nullptr;
+	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pDSS = nullptr;
 	m_WireFence->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
 
 	m_water->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
 	m_water->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
-	m_water->GetComponent<MeshRender>()->m_pMat->m_pDDS = nullptr;
+	m_water->GetComponent<MeshRender>()->m_pMat->m_pDSS = nullptr;
 	m_water->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
 }
 
 /// <summary>
 ///镜面反射状态设置
 /// </summary>
-void Scene::UpdateReflectState()
-{
-	//设置反射区域
-	// ******************
-	// 1. 给镜面反射区域写入值1到模板缓冲区
-	// 
-	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;
-	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSNoColorWrite;
-	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSWriteStencil;
-	m_Mirror->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
-
-	// ******************
-	// 2. 绘制不透明的反射物体
-	//
-	for (int i = 0; i < 4; i++)
-	{
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
-		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
-	}
-
-	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
-	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
-	m_pPlane->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
-
-	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
-	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-	m_pCube->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
-	m_pCube->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
-	// ******************
-	// 3. 绘制透明的反射物体
-	//
-	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
-	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
-	m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
-	m_WireFence->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
-
-	m_water->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
-	m_water->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
-	m_water->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
-	m_water->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
-}
+//void Scene::UpdateNormalState()
+//{
+//	//设置反射区域
+//	// ******************
+//	// 1. 给镜面反射区域写入值1到模板缓冲区
+//	// 
+//	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;
+//	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSNoColorWrite;
+//	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSWriteStencil;
+//	//m_Mirror->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
+//
+//	// ******************
+//	// 2. 绘制不透明的反射物体
+//	//
+//	//for (int i = 0; i < 4; i++)
+//	//{
+//	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
+//	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+//	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
+//	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+//	//}
+//
+//	//m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
+//	//m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+//	//m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
+//	//m_pPlane->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+//
+//	//m_pCube->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
+//	//m_pCube->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+//	//m_pCube->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
+//	//m_pCube->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+//	//// ******************
+//	//// 3. 绘制透明的反射物体
+//	////
+//	//m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
+//	//m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
+//	//m_WireFence->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
+//	//m_WireFence->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+//
+//	//m_water->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSNoCull;//无裁剪
+//	//m_water->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSTransparent;;
+//	//m_water->GetComponent<MeshRender>()->m_pMat->m_pDDS = RenderStates::DSSDrawWithStencil;
+//	//m_water->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+//}

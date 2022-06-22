@@ -64,7 +64,7 @@ Graphics::Graphics(HWND hwnd,UINT width,UINT height):m_Hwnd(hwnd)
 	descDepth.Height = height;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	descDepth.SampleDesc.Count = 4u;
 	descDepth.SampleDesc.Quality = 0u;
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
@@ -196,7 +196,11 @@ void Graphics::ClearBuffer(float r, float g, float b)
 void Graphics::OnRender(float deltaTime)
 {
 	ObjectManager::Instance()->DoFrame(deltaTime);
-	HR(m_SwapChain->Present(0u, 0u));
+}
+
+void Graphics::OnPresent(UINT SyncInterval, UINT Flags)
+{
+	HR(m_SwapChain->Present(SyncInterval, Flags));
 }
 
 

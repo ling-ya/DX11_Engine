@@ -26,7 +26,7 @@ void Scene::Init()
 	m_pCamera->AddComponent(pCameraComponent);//添加相机组件
 
 	m_Mirror = GameObject::CreateGameObject("Mirror");
-	m_Mirror->GetComponent<Transform>()->SetPosition(0.0f, 3.0f, 10.0f);
+	m_Mirror->GetComponent<Transform>()->SetPosition(0.0f, 3.0f, 9.99f);
 	m_Mirror->GetComponent<Transform>()->SetRotation(-XM_PIDIV2, 0.0f, 0.0f);
 	MeshRender* pMirrorrender = new MeshRender(Mesh::CreatePlane(8.0f, 8.0f, 1.0f, 1.0f));
 	pMirrorrender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
@@ -44,16 +44,16 @@ void Scene::Init()
 	m_pPlane->AddComponent(pPlanerender);
 
 	//墙面
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	m_Walls[i] = GameObject::CreateGameObject("Wall");
-	//	m_Walls[i]->GetComponent<Transform>()->SetRotation(-XM_PIDIV2, XM_PIDIV2 * i, 0.0f);
-	//	m_Walls[i]->GetComponent<Transform>()->SetPosition(i % 2 ? -10.0f * (i - 2) : 0.0f, 3.0f, i % 2 == 0 ? -10.0f * (i - 1) : 0.0f);
-	//	MeshRender* pWallrender = new MeshRender(Mesh::CreatePlane(20.0f, 8.0f, 5.0f, 1.5f));
-	//	pWallrender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
-	//	pWallrender->m_pMat->SetTexture("Texture\\brick.dds");
-	//	m_Walls[i]->AddComponent(pWallrender);
-	//}
+	for (int i = 0; i < 4; i++)
+	{
+		m_Walls[i] = GameObject::CreateGameObject("Wall");
+		m_Walls[i]->GetComponent<Transform>()->SetRotation(-XM_PIDIV2, XM_PIDIV2 * i, 0.0f);
+		m_Walls[i]->GetComponent<Transform>()->SetPosition(i % 2 ? -10.0f * (i - 2) : 0.0f, 3.0f, i % 2 == 0 ? -10.0f * (i - 1) : 0.0f);
+		MeshRender* pWallrender = new MeshRender(Mesh::CreatePlane(20.0f, 8.0f, 5.0f, 1.5f));
+		pWallrender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
+		pWallrender->m_pMat->SetTexture("Texture\\brick.dds");
+		m_Walls[i]->AddComponent(pWallrender);
+	}
 
 	//Cube
 	m_pCube = GameObject::CreateGameObject("Cube");
@@ -67,7 +67,7 @@ void Scene::Init()
 	//透明物体(这是开启了深度测试的)
 	//先绘制篱笆盒，绘制完后像素已经在后备缓冲区，再绘制水面，水面能通过深度测试，通过的像素再进行混合
 	m_WireFence = GameObject::CreateGameObject("WireFence");
-	m_WireFence->GetComponent<Transform>()->SetPosition(3.0f, 0.1f, 0.0f);
+	m_WireFence->GetComponent<Transform>()->SetPosition(3.0f, 0.1f, 2.0f);
 	MeshRender* pwireRender = new MeshRender(Mesh::CreateCube());
 	pwireRender->m_pMat = new Material(Shader::Find("HLSL\\Light"));
 	pwireRender->m_pMat->SetTexture("Texture\\WireFence.dds");
@@ -149,6 +149,7 @@ void Scene::UpdateReflectState()
 	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;
 	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pBS = RenderStates::BSNoColorWrite;
 	m_Mirror->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSWriteStencil;
+	m_Mirror->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
 
 
 	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
@@ -164,13 +165,13 @@ void Scene::UpdateReflectState()
 	// ******************
 	// 2. 绘制不透明的反射物体
 	//
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
-	//}
+	for (int i = 0; i < 4; i++)
+	{
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = RenderStates::RSCullClockWise;//顺时针裁剪
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDSS = RenderStates::DSSDrawWithStencil;
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
+	}
 
 	// ******************
 	// 3. 绘制透明的反射物体
@@ -194,13 +195,13 @@ void Scene::UpdateNormalState()
 	m_Mirror->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = true;
 
 	////绘制正常物体
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;//顺时针裁剪
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDSS = nullptr;
-	//	m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
-	//}
+	for (int i = 0; i < 4; i++)
+	{
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;//顺时针裁剪
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->m_pDSS = nullptr;
+		m_Walls[i]->GetComponent<MeshRender>()->m_pMat->c_TransformBuffer.isReflection = false;
+	}
 
 	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pRS = nullptr;//顺时针裁剪
 	m_pPlane->GetComponent<MeshRender>()->m_pMat->m_pBS = nullptr;
